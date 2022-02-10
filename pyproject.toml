@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snowplow"
-version = "0.0.2"
+version = "0.0.3"
 description = "Utilities for syncing data between snowflake and salesforce."
 authors = ["rehket <aalbright@iamrehket.me>"]
 license = "MIT"
