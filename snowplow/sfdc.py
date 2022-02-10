@@ -14,7 +14,8 @@ def get_object_definition(
     api_version: str = "53.0",
     skip_fields: str = os.environ.get("SFDC_SKIP_FIELDS"),
 ) -> TableObject:
-    skip_fields = [field.lower() for field in skip_fields.split(",")]
+    if skip_fields:
+        skip_fields = [field.lower() for field in skip_fields.split(",")]
 
     response = client.get(
         url=f"/services/data/v{api_version}/sobjects/{object}/describe/"
