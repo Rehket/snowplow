@@ -65,6 +65,7 @@ def build_salesforce_query(
             "salesforce_object": salesforce_object_name,
             "snowflake_table": snowflake_table_name,
             "query": query,
+            "field_list": [field.name.upper() for field in common_field_list]
         }
     except Exception as e:
         return {
