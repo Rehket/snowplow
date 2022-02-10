@@ -16,6 +16,8 @@ def get_object_definition(
 ) -> TableObject:
     if skip_fields:
         skip_fields = [field.lower() for field in skip_fields.split(",")]
+    else:
+        skip_fields = []
 
     response = client.get(
         url=f"/services/data/v{api_version}/sobjects/{object}/describe/"
