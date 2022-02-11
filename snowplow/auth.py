@@ -96,7 +96,7 @@ def get_salesforce_client(
     salesforce_cred.base_url = str(body["instance_url"])
 
     sfdc_user_token_check = httpx.post(
-        "https://login.salesforce.com/services/oauth2/introspect",
+        f"{salesforce_cred.base_url}/services/oauth2/introspect",
         auth=(
             salesforce_cred.client_id,
             salesforce_cred.client_secret,
