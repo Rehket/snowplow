@@ -115,4 +115,8 @@ def get_salesforce_client(
     return httpx.Client(
         base_url=salesforce_cred.base_url,
         headers={"Authorization": f"Bearer {salesforce_cred.token}"},
+        timeout=httpx.Timeout(
+            salesforce_cred.client_timeout,
+            connect=salesforce_cred.client_connect_timeout,
+        ),
     )

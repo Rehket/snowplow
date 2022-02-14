@@ -25,6 +25,8 @@ class SalesforceCred(BaseSettings):
     token: Optional[str]
     base_url: Optional[str]
     api_version: str
+    client_timeout: int = 10
+    client_connect_timeout: int = 60
 
     class Config:
         env_prefix = "sfdc_"
