@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "snowplow"
-version = "0.0.9"
+version = "0.0.10"
 description = "Utilities for syncing data between snowflake and salesforce."
 authors = ["rehket <aalbright@iamrehket.me>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 snowflake-connector-python = "^2.7.3"
 httpx = "^0.22.0"
 pydantic = "^1.9.0"
