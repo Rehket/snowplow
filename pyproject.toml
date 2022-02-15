@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snowplow"
-version = "0.0.10"
+version = "0.0.11"
 description = "Utilities for syncing data between snowflake and salesforce."
 authors = ["rehket <aalbright@iamrehket.me>"]
 license = "MIT"
@@ -12,6 +12,7 @@ httpx = "^0.22.0"
 pydantic = "^1.9.0"
 PyJWT = "^2.3.0"
 typer = "^0.4.0"
+tenacity = "^8.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
