@@ -11,19 +11,26 @@ from snowplow.query import get_table_definition
 
 
 def get_common_fields(
-    first_object: TableObject, second_object: TableObject
+    first_object: TableObject, second_object: TableObject, field_list: List[str] = None
 ) -> List[TableObjectField]:
     """
     Gets the common fields between two table object definitions.
     :param first_object: The first TableObject to compare.
     :param second_object: The second TableObject to compare.
+    :param field_list: A set of fields to used to specify a subset of the common fields to use.
     :return: The list of TableObjectFields that are shared between the two objects.
     """
     common_fields = first_object.to_field_name_set().intersection(
         second_object.to_field_name_set()
     )
+    if field_list:
+        common_fields = set(
+            [field_name.upper() for field_name in field_list]
+        ).intersection(common_fields)
 
-    return [field for field in second_object.fields if field.name.upper() in common_fields]
+    return [
+        field for field in second_object.fields if field.name.upper() in common_fields
+    ]
 
 
 def build_salesforce_query(
@@ -31,6 +38,7 @@ def build_salesforce_query(
     snowflake_table_prefix: str = "SFDC_",
     snowflake_table_postfix: str = "_OBJECT",
     snowflake_schema: str = os.environ.get("SNOWFLAKE_SCHEMA"),
+    field_list: List[str] = None,
     snowflake_client: snowflake.connector.SnowflakeConnection = get_snowflake_client(),
     salesforce_client: httpx.Client = get_salesforce_client(),
 ) -> Dict[str, str]:
@@ -49,15 +57,17 @@ def build_salesforce_query(
 
         # print(salesforce_table)
         common_field_list = get_common_fields(
-            first_object=salesforce_table, second_object=snowflake_table
+            first_object=salesforce_table,
+            second_object=snowflake_table,
+            field_list=field_list,
         )
 
         if len(common_field_list) < 1:
-            raise RuntimeError(f"There are no common fields between Salesforce object: {salesforce_object_name} and snowflake table {snowflake_schema}.{snowflake_table_name}")
+            raise RuntimeError(
+                f"There are no common fields between Salesforce object: {salesforce_object_name} and snowflake table {snowflake_schema}.{snowflake_table_name}"
+            )
 
-        query = (
-            f"SELECT {','.join([field.name.upper() for field in common_field_list])} FROM {salesforce_object_name}"
-        )
+        query = f"SELECT {','.join([field.name.upper() for field in common_field_list])} FROM {salesforce_object_name}"
         salesforce_client.close()
         snowflake_client.close()
         return {
@@ -65,7 +75,7 @@ def build_salesforce_query(
             "salesforce_object": salesforce_object_name,
             "snowflake_table": snowflake_table_name,
             "query": query,
-            "field_list": [field.name.upper() for field in common_field_list]
+            "field_list": [field.name.upper() for field in common_field_list],
         }
     except Exception as e:
         return {

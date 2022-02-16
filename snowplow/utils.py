@@ -22,7 +22,14 @@ def get_salesforce_query(
     snowflake_table_prefix: str = "SFDC_",
     snowflake_table_postfix: str = "_OBJECT",
     snowflake_schema: str = os.environ.get("SNOWFLAKE_SCHEMA"),
+    field_list: str = typer.Option(
+        None,
+        help="A comma delimited set of fields to further filter the common fields between snowflake and salesforce.",
+    ),
 ) -> None:
+
+    if field_list:
+        field_list = [field_name.strip() for field_name in field_list.split(",")]
     print(
         json.dumps(
             build_salesforce_query(
@@ -30,6 +37,7 @@ def get_salesforce_query(
                 snowflake_table_prefix=snowflake_table_prefix,
                 snowflake_table_postfix=snowflake_table_postfix,
                 snowflake_schema=snowflake_schema,
+                field_list=field_list
             )
         ),
         file=sys.stdout,
