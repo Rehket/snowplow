@@ -15,6 +15,7 @@ def get_object_definition(
     client: httpx.Client = get_salesforce_client(),
     api_version: str = "53.0",
     skip_fields: str = os.environ.get("SFDC_SKIP_FIELDS"),
+    required_fields: str = os.environ.get("SFDC_REQUIRED_FIELDS"),
     include_compound_fields: bool = False,
     max_attempts: int = os.getenv("SFDC_MAX_DOWNLOAD_ATTEMPTS", 20),
 ) -> TableObject:
@@ -32,6 +33,11 @@ def get_object_definition(
         skip_fields = [field.lower() for field in skip_fields.split(",")]
     else:
         skip_fields = []
+
+    if required_fields:
+        required_fields = [field.lower() for field in required_fields.split(",")]
+    else:
+        required_fields = []
 
     try:
         for attempt in Retrying(
@@ -60,8 +66,11 @@ def get_object_definition(
             TableObjectField(**field)
             for field in response.json().get("fields")
             if (
-                field.get("name") not in skip_fields
-                and field.get("name") not in compound_field_names
+                field.get("name") in required_fields
+                or (
+                    field.get("name") not in skip_fields
+                    and field.get("name") not in compound_field_names
+                )
             )
         ],
         system="salesforce",
