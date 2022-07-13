@@ -35,6 +35,7 @@ def get_object_definition(
         skip_fields = []
 
     if required_fields:
+        print(required_fields)
         required_fields = [field.lower() for field in required_fields.split(",")]
     else:
         required_fields = []
@@ -66,10 +67,10 @@ def get_object_definition(
             TableObjectField(**field)
             for field in response.json().get("fields")
             if (
-                field.get("name") in required_fields
+                field.get("name").lower() in required_fields
                 or (
-                    field.get("name") not in skip_fields
-                    and field.get("name") not in compound_field_names
+                    field.get("name").lower() not in skip_fields
+                    and field.get("name").lower() not in compound_field_names
                 )
             )
         ],
