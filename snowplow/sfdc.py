@@ -35,7 +35,6 @@ def get_object_definition(
         skip_fields = []
 
     if required_fields:
-        print(required_fields)
         required_fields = [field.lower() for field in required_fields.split(",")]
     else:
         required_fields = []
