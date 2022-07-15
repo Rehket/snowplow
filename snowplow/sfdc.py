@@ -14,8 +14,8 @@ def get_object_definition(
     object: str,
     client: httpx.Client = get_salesforce_client(),
     api_version: str = "53.0",
-    skip_fields: str = os.environ.get("SFDC_SKIP_FIELDS"),
-    required_fields: str = os.environ.get("SFDC_REQUIRED_FIELDS"),
+    skip_fields: str = os.environ.get("SFDC_SKIP_FIELDS", None),
+    required_fields: str = os.environ.get("SFDC_REQUIRED_FIELDS", None),
     include_compound_fields: bool = False,
     max_attempts: int = os.getenv("SFDC_MAX_DOWNLOAD_ATTEMPTS", 20),
 ) -> TableObject:
@@ -56,7 +56,9 @@ def get_object_definition(
         compound_field_names = []
     else:
         compound_field_names = [
-            field.get("compoundFieldName") for field in object_data.get("fields")
+            field.get("compoundFieldName").lower()
+            for field in object_data.get("fields")
+            if field.get("compoundFieldName") is not None
         ]
 
     table = TableObject(
