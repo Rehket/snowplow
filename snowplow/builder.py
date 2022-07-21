@@ -46,10 +46,10 @@ def build_salesforce_query(
     try:
 
         salesforce_table = get_object_definition(
-            object=salesforce_object_name, client=salesforce_client
+            object=salesforce_object_name.upper(), client=salesforce_client
         )
         snowflake_table_name = (
-            f"{snowflake_table_prefix}{salesforce_object_name}{snowflake_table_postfix}"
+            f"{snowflake_table_prefix}{salesforce_object_name}{snowflake_table_postfix}".upper()
         )
         snowflake_table = get_table_definition(
             table=snowflake_table_name, schema=snowflake_schema, client=snowflake_client
